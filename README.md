@@ -3,8 +3,10 @@
 <!-- ANIMATED GRADIENT BANNER -->
 <img src="https://capsule-render.vercel.app/api?type=waving&color=0:06b6d4,50:8b5cf6,100:ec4899&height=280&section=header&text=Health%20%26%20Fitness%20Monitor&fontSize=50&fontColor=ffffff&animation=fadeIn&fontAlignY=35&desc=Your%20Personal%20Health%20Intelligence%20Platform&descAlignY=55&descSize=18" width="100%"/>
 
-<!-- ANIMATED TYPING EFFECT -->
-<a href="https://git.io/typing-svg"><img src="https://readme-typing-svg.demolab.com?font=Fira+Code&weight=600&size=22&duration=3000&pause=1000&color=8B5CF6&center=true&vCenter=true&multiline=true&repeat=true&width=700&height=100&lines=📊+Real-Time+Health+Analytics;🏋️+Smart+Fitness+Tracking;🍎+Intelligent+Nutrition+Insights;💤+Sleep+Quality+Optimization" alt="Typing SVG" /></a>
+<!-- TYPING EFFECT REPLACEMENT (Static for Stability) -->
+<h3 align="center">
+  📊 Real-Time Health Analytics • 🏋️ Smart Fitness Tracking • 🍎 Intelligent Nutrition Insights • 💤 Sleep Quality Optimization
+</h3>
 
 <br/>
 
@@ -114,7 +116,7 @@ Built with modern technologies and designed for seamless user experience, this d
 <br/><sub>Calories • Protein<br/>Carbs • Fat</sub>
 </td>
 <td align="center" width="20%">
-<img src="https://img.icons8.com/3d-fluency/94/sleeping-in-bed.png" width="60" alt="Sleep"/>
+<img src="https://img.icons8.com/3d-fluency/94/moon-and-stars.png" width="60" alt="Sleep"/>
 <br/><b>Sleep</b>
 <br/><sub>Duration • Quality<br/>Patterns • Trends</sub>
 </td>
@@ -298,8 +300,6 @@ Built with modern technologies and designed for seamless user experience, this d
 
 ## 📁 Project Structure
 
-<div align="center">
-
 ```
 health_fitness_monitor/
 │
@@ -332,8 +332,6 @@ health_fitness_monitor/
 ├── 📖 demo_script.md               # 5-minute demo guide
 └── 📄 README.md                    # You are here! ✨
 ```
-
-</div>
 
 <br/>
 
@@ -377,7 +375,7 @@ health_fitness_monitor/
 
 ```bash
 # Clone the repository
-git clone <your-repo-url>
+git clone https://github.com/madhavsathyan/Fitness-Tracker.git
 
 # Navigate into the project
 cd health_fitness_monitor
@@ -663,51 +661,32 @@ Press Ctrl + C in each terminal
 
 <br/>
 
-## 👥 Contributors
-
+## 🎯 Aim of this Project
 <div align="center">
-
 <br/>
-
-**CSR210** — Advanced Programming and Database Systems
-
+This project is for my continuous assessment (CA-2) in **CS210 - Advanced Programming and Database Systems**. It acts like a small exam in my college.
 <br/>
-
-<img src="https://img.shields.io/badge/CA--2_Assignment-Educational_Project-blueviolet?style=for-the-badge" alt="Assignment"/>
-
 </div>
-
 <br/>
-
 ## 📄 License
-
 <div align="center">
-
 This project is licensed under the **MIT License**
-
 <br/>
-
 <img src="https://img.shields.io/badge/License-MIT-yellow.svg?style=for-the-badge" alt="MIT License"/>
-
 </div>
-
 <br/>
-
 <!-- FOOTER WAVE -->
 <img src="https://capsule-render.vercel.app/api?type=waving&color=0:06b6d4,50:8b5cf6,100:ec4899&height=120&section=footer" width="100%"/>
-
 <div align="center">
-
 <br/>
-
 **⭐ If you found this helpful, please consider giving it a star! ⭐**
-
 <br/>
-
 <img src="https://img.shields.io/badge/Made%20with-❤️%20and%20☕-ff6b6b?style=for-the-badge" alt="Made with love"/>
-
 <br/><br/>
-
 <sub>Built with passion for health and wellness 🏃‍♂️💪🥗</sub>
-
+<br/>
+<br/>
+> [!NOTE]
+> **Disclaimer:** This is just a prototype and not intended for general usage.
 </div>
+
