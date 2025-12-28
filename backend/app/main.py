@@ -27,7 +27,7 @@ def create_default_admin():
         
         if not admin:
             admin = User(
-                username="fitadmin",  # Use different username to avoid conflict
+                username="admin",  # Standardize to "admin"
                 email="admin@fittrack.com",
                 hashed_password=hash_password("admin123"),
                 role="admin",
@@ -37,14 +37,15 @@ def create_default_admin():
             )
             db.add(admin)
             db.commit()
-            print("✅ Default admin user created: admin@fittrack.com / admin123")
+            print("✅ Default admin user created: admin / admin123")
         else:
             # Update existing admin to ensure correct credentials
+            admin.username = "admin" # Ensure username is admin
             admin.email = "admin@fittrack.com"
             admin.hashed_password = hash_password("admin123")
             admin.role = "admin"
             db.commit()
-            print(f"✅ Admin user updated: {admin.username} / admin123 (email: admin@fittrack.com)")
+            print(f"✅ Admin user updated: {admin.username} / admin123")
     except Exception as e:
         print(f"⚠️ Admin setup skipped: {e}")
     finally:

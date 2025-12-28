@@ -253,7 +253,7 @@ Use these to log in:
 
 | Username | Password | Role |
 |----------|----------|------|
-| admin | password123 | Admin |
+| admin | admin123 | Admin |
 | demo_user | password123 | User |
 
 ---
