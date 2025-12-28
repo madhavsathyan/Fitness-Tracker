@@ -1,0 +1,27 @@
+import { Line, LineChart, ResponsiveContainer } from 'recharts';
+
+interface SparklineProps {
+    data: number[];
+    color: string;
+    height?: number;
+}
+
+export default function StatCardSparkline({ data, color, height = 40 }: SparklineProps) {
+    const chartData = data.map((val, i) => ({ i, val }));
+
+    return (
+        <div style={{ width: '100%', height }}>
+            <ResponsiveContainer>
+                <LineChart data={chartData}>
+                    <Line
+                        type="monotone"
+                        dataKey="val"
+                        stroke={color}
+                        strokeWidth={2}
+                        dot={false}
+                    />
+                </LineChart>
+            </ResponsiveContainer>
+        </div>
+    );
+}
