@@ -8,7 +8,7 @@ Usage:
 
 This will:
 1. Start the FastAPI backend on http://localhost:8000
-2. Start the Dash frontend on http://localhost:8050
+2. Start the React frontend on http://localhost:5173
 """
 
 import subprocess
@@ -42,7 +42,7 @@ def main():
     # Get project root directory
     project_root = os.path.dirname(os.path.abspath(__file__))
     backend_dir = os.path.join(project_root, "backend")
-    frontend_dir = os.path.join(project_root, "frontend")
+    frontend_dir = os.path.join(project_root, "frontend-react")
     
     print("=" * 60)
     print("🏃 Health & Fitness Monitor - Starting Servers")
@@ -51,10 +51,8 @@ def main():
     # Start Backend
     print("\n📦 Starting Backend (FastAPI)...")
     backend_process = subprocess.Popen(
-        [sys.executable, "-m", "uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"],
-        cwd=backend_dir,
-        stdout=subprocess.PIPE,
-        stderr=subprocess.STDOUT
+        [sys.executable, "-m", "uvicorn", "app.main:app", "--reload", "--port", "8000"],
+        cwd=backend_dir
     )
     processes.append(backend_process)
     print("   ✅ Backend starting on http://localhost:8000")
@@ -64,20 +62,20 @@ def main():
     time.sleep(2)
     
     # Start Frontend
-    print("\n🎨 Starting Frontend (Dash)...")
+    print("\n🎨 Starting Frontend (React + Vite)...")
+    # Check if npm is installed/available, otherwise warn
     frontend_process = subprocess.Popen(
-        [sys.executable, "app.py"],
+        ["npm", "run", "dev"],
         cwd=frontend_dir,
-        stdout=subprocess.PIPE,
-        stderr=subprocess.STDOUT
+        shell=True if os.name == 'nt' else False  # shell=True required for npm on Windows
     )
     processes.append(frontend_process)
-    print("   ✅ Frontend starting on http://localhost:8050")
+    print("   ✅ Frontend starting on http://localhost:5173")
     
     print("\n" + "=" * 60)
     print("🚀 Both servers are running!")
     print("=" * 60)
-    print("\n📊 Dashboard: http://localhost:8050")
+    print("\n📊 Dashboard: http://localhost:5173")
     print("🔌 API Docs:  http://localhost:8000/docs")
     print("\n💡 Press Ctrl+C to stop both servers\n")
     
