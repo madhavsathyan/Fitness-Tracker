@@ -392,7 +392,7 @@ export default function Dashboard() {
     const [loading, setLoading] = useState(true);
     const [menuOpen, setMenuOpen] = useState(false);
     const [profileOpen, setProfileOpen] = useState(false);
-    const [notifOpen, setNotifOpen] = useState(false);
+
     const { theme, toggleTheme } = useTheme();
 
     // Modal states
@@ -413,6 +413,22 @@ export default function Dashboard() {
     useEffect(() => {
         const timer = setInterval(() => setNow(new Date()), 60000);
         return () => clearInterval(timer);
+    }, []);
+
+    // Random Quote Logic
+    const [quote, setQuote] = useState('');
+    useEffect(() => {
+        const quotes = [
+            "The only bad workout is the one that didn't happen. 🏃‍♂️",
+            "Discipline is doing what needs to be done. 💪",
+            "Your health is an investment, not an expense. 💎",
+            "Don't stop when you're tired. Stop when you're done. 🔥",
+            "You don't have to be great to start, but you have to start to be great. 🚀",
+            "Motivation is what gets you started. Habit is what keeps you going. 🔄",
+            "Small steps every day add up to big results. 📈",
+            "Sweat is magic. Cover yourself in it daily to grant your wishes. ✨"
+        ];
+        setQuote(quotes[Math.floor(Math.random() * quotes.length)]);
     }, []);
 
     // Redirect admins
@@ -502,11 +518,7 @@ export default function Dashboard() {
                             <h1 className="text-xl font-bold gradient-text">FitTrack Pro</h1>
                         </div>
                         <div className="flex items-center gap-4">
-                            <button onClick={() => setNotifOpen(!notifOpen)} className="p-2 text-gray-400 hover:text-white hover:bg-white/10 rounded-lg transition-colors relative">
-                                <span className="text-xl">🔔</span>
-                                <span className="absolute top-1 right-1 w-4 h-4 bg-red-500 rounded-full text-[10px] flex items-center justify-center font-bold text-white">3</span>
-                            </button>
-                            <div className="h-8 w-px bg-white/10 hidden sm:block" />
+
                             <div className="relative">
                                 <button onClick={() => setProfileOpen(!profileOpen)} className="flex items-center gap-3 px-2 py-1.5 hover:bg-white/5 rounded-xl transition-all">
                                     <div className="w-9 h-9 bg-gradient-to-br from-indigo-500 to-purple-500 rounded-full flex items-center justify-center font-bold">
@@ -540,13 +552,9 @@ export default function Dashboard() {
                                 <span className="flex items-center gap-2"><Calendar size={16} /> {currentDate}</span>
                                 <span className="flex items-center gap-2"><Clock size={16} /> {currentTime}</span>
                             </div>
-                            <p className="text-gray-300 max-w-2xl text-lg">Your 7-day streak is on fire! Keep pushing. 💪</p>
+                            <p className="text-gray-300 max-w-2xl text-lg italic opacity-90">"{quote}"</p>
                         </div>
-                        <div className="relative z-10 bg-white/5 px-6 py-4 rounded-2xl border border-white/10">
-                            <div className="text-4xl animate-bounce-subtle">🔥</div>
-                            <div className="text-2xl font-bold text-white">7 Days</div>
-                            <div className="text-sm text-orange-400 font-medium uppercase tracking-wider">Streak</div>
-                        </div>
+                        {/* Streak card removed as requested */}
                     </div>
 
                     {/* Today's Progress Cards */}

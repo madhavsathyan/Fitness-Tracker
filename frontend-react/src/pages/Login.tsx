@@ -21,20 +21,7 @@ const floatingEmojis = [
     { emoji: '🏋️', size: 70, left: '70%', top: '80%', delay: 3.5 },
 ];
 
-// Password strength checker
-const checkPasswordStrength = (password: string): 'weak' | 'fair' | 'good' | 'strong' => {
-    if (password.length === 0) return 'weak';
-    let score = 0;
-    if (password.length >= 8) score++;
-    if (/[a-z]/.test(password) && /[A-Z]/.test(password)) score++;
-    if (/\d/.test(password)) score++;
-    if (/[^a-zA-Z0-9]/.test(password)) score++;
 
-    if (score <= 1) return 'weak';
-    if (score === 2) return 'fair';
-    if (score === 3) return 'good';
-    return 'strong';
-};
 
 export default function Login() {
     const navigate = useNavigate();
@@ -74,7 +61,7 @@ export default function Login() {
         }
     };
 
-    const passwordStrength = checkPasswordStrength(password);
+
 
     return (
         <div className="min-h-screen bg-mesh-gradient noise-overlay relative overflow-hidden flex items-center justify-center px-4">
@@ -206,22 +193,7 @@ export default function Login() {
                             </button>
                         </motion.div>
 
-                        {/* Password Strength (shown when typing) */}
-                        <AnimatePresence>
-                            {password.length > 0 && (
-                                <motion.div
-                                    initial={{ opacity: 0, height: 0 }}
-                                    animate={{ opacity: 1, height: 'auto' }}
-                                    exit={{ opacity: 0, height: 0 }}
-                                    className={`strength-meter strength-${passwordStrength}`}
-                                >
-                                    <div className="strength-segment" />
-                                    <div className="strength-segment" />
-                                    <div className="strength-segment" />
-                                    <div className="strength-segment" />
-                                </motion.div>
-                            )}
-                        </AnimatePresence>
+
 
                         {/* Submit Button */}
                         <motion.button
@@ -266,20 +238,7 @@ export default function Login() {
                         </p>
                     </motion.div>
 
-                    {/* Demo Credentials */}
-                    <motion.div
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        transition={{ delay: 0.7 }}
-                        className="mt-6 pt-6 border-t border-white/10 text-center"
-                    >
-                        <p className="text-gray-500 text-sm mb-2">Demo Credentials:</p>
-                        <div className="flex justify-center gap-4 text-xs">
-                            <span className="px-3 py-1 bg-indigo-500/10 rounded-full text-indigo-400">
-                                admin@fittrack.com / admin123
-                            </span>
-                        </div>
-                    </motion.div>
+
                 </div>
             </motion.div>
         </div>

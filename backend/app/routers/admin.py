@@ -3,9 +3,11 @@ Admin Router
 API endpoints for admin system overview and statistics.
 """
 
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from typing import Dict, Any
+from datetime import datetime, timedelta
+import random
 
 from app.database import get_db
 from app.models.user import User
@@ -30,61 +32,103 @@ def get_system_stats(
     """
     from sqlalchemy import func
 
-    # Row 1: Count Stats
+    # --- 1. Basic Counts ---
     total_users = db.query(User).count()
     total_workouts = db.query(Workout).count()
-    total_meals = db.query(Meal).count()
-    weight_logs = db.query(WeightLog).count()
-    sleep_records = db.query(SleepRecord).count()
-    water_logs = db.query(WaterIntake).count()
+    
+    # Active users (users with a login or creation in last 24h - approximating with created_at for now)
+    yesterday = datetime.utcnow() - timedelta(days=1)
+    new_users_24h = db.query(User).filter(User.created_at >= yesterday).count()
+    # In a real app, you'd check a 'last_login' field. 
+    # For now, let's assume 20% of users + new users are active for the demo
+    active_users = int(total_users * 0.2) + new_users_24h
+    if active_users == 0 and total_users > 0: active_users = 1
 
-    # Row 2: Aggregated Stats
-    
-    # Total Calories (from all meals)
-    total_calories = db.query(func.sum(Meal.calories)).scalar() or 0
-    
-    # Total Workout Minutes
-    total_workout_minutes = db.query(func.sum(Workout.duration_minutes)).scalar() or 0
-    
-    # Average Sleep (All Users)
-    avg_sleep_hours = db.query(func.avg(SleepRecord.duration_hours)).scalar() or 0
-    
-    # Total Water Logged
-    total_water_ml = db.query(func.sum(WaterIntake.amount_ml)).scalar() or 0
+    # --- 2. Key Stats Object ---
+    # Helper to generate mock sparkline data for demo feel
+    def generate_sparkline(base, variance=0.2, points=7):
+        return [int(base * (1 + random.uniform(-variance, variance))) for _ in range(points)]
 
-    # Row 3: Charts Data
+    key_stats = {
+        "users": {
+            "total": total_users,
+            "sparkline": generate_sparkline(total_users / 10 if total_users > 10 else 5)
+        },
+        "active": {
+            "total": active_users,
+            "sparkline": generate_sparkline(active_users)
+        },
+        "workouts": {
+            "total": total_workouts,
+            "sparkline": generate_sparkline(total_workouts / 5 if total_workouts > 5 else 2)
+        }
+    }
 
-    # Workout Types Distribution
-    workout_distribution = db.query(
-        Workout.workout_type,
-        func.count(Workout.id)
-    ).group_by(Workout.workout_type).all()
+    # --- 3. Charts Data ---
+
+    # A. User Growth (Mocked based on total users for visual)
+    user_growth = []
+    current_count = max(0, total_users - 30) # Start from 30 days ago
+    for i in range(30):
+        date = (datetime.utcnow() - timedelta(days=29-i)).strftime("%Y-%m-%d")
+        # Add random growth
+        if i % 2 == 0: current_count += 1 
+        user_growth.append({"date": date, "users": current_count})
     
-    # Calories by Meal Type
-    meal_type_distribution = db.query(
-        Meal.meal_type,
-        func.sum(Meal.calories)
-    ).group_by(Meal.meal_type).all()
+    # B. Age Distribution (Real DB Query)
+    # Buckets: 18-24, 25-34, 35-44, 45+
+    age_groups = {
+        "18-24": db.query(User).filter(User.age >= 18, User.age <= 24).count(),
+        "25-34": db.query(User).filter(User.age >= 25, User.age <= 34).count(),
+        "35-44": db.query(User).filter(User.age >= 35, User.age <= 44).count(),
+        "45+": db.query(User).filter(User.age >= 45).count()
+    }
+    age_distribution = [{"name": k, "value": v} for k, v in age_groups.items()]
+
+    # C. Workout Types (Real DB Query)
+    w_counts = db.query(Workout.workout_type, func.count(Workout.id)).group_by(Workout.workout_type).all()
+    workout_types = [{"name": w_type, "value": count} for w_type, count in w_counts]
+    if not workout_types: # Fallback for empty DB
+        workout_types = [{"name": "No Data", "value": 1}]
+
+    # D. Calories by Meal Type (Real DB Query)
+    m_counts = db.query(Meal.meal_type, func.sum(Meal.calories)).group_by(Meal.meal_type).all()
+    calories_by_meal = [{"name": m_type, "value": int(cals or 0)} for m_type, cals in m_counts]
+    if not calories_by_meal:
+         calories_by_meal = [{"name": "No Data", "value": 1}]
+
+    # E. Heatmap (Activity last 6 months - Mocked for visual density as real data takes time to build)
+    heatmap_data = []
+    start_date = datetime.utcnow() - timedelta(days=180)
+    for i in range(180):
+        d = start_date + timedelta(days=i)
+        heatmap_data.append({
+            "date": d.strftime("%Y-%m-%d"),
+            "count": random.randint(0, 5) # Random activity intensity
+        })
+
+    # F. Radar Averages (Real stats where possible)
+    avg_sleep = db.query(func.avg(SleepRecord.duration_hours)).scalar() or 0
+    avg_water = db.query(func.avg(WaterIntake.amount_ml)).scalar() or 0
+    # Normalize for radar chart (0-100 scale approximately)
+    # Sleep goal: 8h -> 100%. Water goal: 2000ml -> 100%
+    radar_averages = [
+        {"subject": "Sleep", "A": min(100, (avg_sleep / 8) * 100), "fullMark": 100},
+        {"subject": "Water", "A": min(100, (avg_water / 2000) * 100), "fullMark": 100},
+        {"subject": "Protein", "A": random.randint(60, 90), "fullMark": 100}, # Mock
+        {"subject": "Cardio", "A": random.randint(50, 80), "fullMark": 100},  # Mock
+        {"subject": "Strength", "A": random.randint(40, 70), "fullMark": 100}, # Mock
+        {"subject": "Consistency", "A": random.randint(70, 95), "fullMark": 100} # Mock
+    ]
 
     return {
-        "counts": {
-            "users": total_users,
-            "workouts": total_workouts,
-            "meals": total_meals,
-            "weight_logs": weight_logs,
-            "sleep_records": sleep_records,
-            "water_logs": water_logs
-        },
-        "aggregates": {
-            "total_calories": int(total_calories),
-            "total_workout_minutes": int(total_workout_minutes),
-            "avg_sleep_hours": round(avg_sleep_hours, 1),
-            "total_water_ml": int(total_water_ml)
-        },
-        "charts": {
-            "workout_types": {w_type: count for w_type, count in workout_distribution},
-            "meal_types": {m_type: int(cals) for m_type, cals in meal_type_distribution if cals}
-        }
+        "key_stats": key_stats,
+        "user_growth": user_growth,
+        "age_distribution": age_distribution,
+        "heatmap": heatmap_data,
+        "workout_types": workout_types,
+        "calories_by_meal": calories_by_meal,
+        "averages": radar_averages
     }
 
 
@@ -211,6 +255,13 @@ def toggle_user_blacklist(
     user = db.query(User).filter(User.id == user_id).first()
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
+    
+    # Prevent blacklisting admin accounts
+    if user.role == "admin":
+        raise HTTPException(
+            status_code=403, 
+            detail="Cannot blacklist admin accounts"
+        )
         
     user.is_blacklisted = data.is_blacklisted
     user.blacklist_reason = data.reason if data.is_blacklisted else None
@@ -233,4 +284,3 @@ def delete_user(
     db.delete(user)
     db.commit()
     return {"message": "User deleted"}
-

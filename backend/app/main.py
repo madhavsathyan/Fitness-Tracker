@@ -4,8 +4,9 @@ Entry point for the Health & Fitness Monitor API.
 """
 
 from contextlib import asynccontextmanager
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.openapi.docs import get_redoc_html
 
 from app.database import engine, Base, SessionLocal
 from app.models.user import User
@@ -69,7 +70,9 @@ app = FastAPI(
     title="FitTrack Pro API",
     description="RESTful API for tracking health and fitness data",
     version="2.0.0",
-    lifespan=lifespan
+    lifespan=lifespan,
+    redoc_url=None, # Disable default to use custom CDN
+    docs_url="/docs"
 )
 
 # CORS middleware - Allow both Dash and React frontends
@@ -81,6 +84,15 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+from fastapi.staticfiles import StaticFiles
+
+# Mount static directory
+import os
+static_dir = os.path.join(os.path.dirname(__file__), "static")
+if not os.path.exists(static_dir):
+    os.makedirs(static_dir)
+app.mount("/static", StaticFiles(directory=static_dir), name="static")
 
 # Include routers
 app.include_router(auth.router, prefix="/api/auth", tags=["Authentication"])
@@ -111,6 +123,17 @@ def root():
         "redoc": "/redoc"
     }
 
+
+@app.get("/redoc", include_in_schema=False)
+def redoc_html():
+    """
+    Custom ReDoc endpoint using local static file.
+    """
+    return get_redoc_html(
+        openapi_url=app.openapi_url,
+        title=app.title + " - ReDoc",
+        redoc_js_url="/static/redoc.standalone.js"
+    )
 
 @app.get("/health")
 def health_check():

@@ -110,29 +110,29 @@ export default function AdminOverview() {
                 <AdminStatCard
                     icon={Users}
                     label="Total Users"
-                    value={data.key_stats.total_users.toLocaleString()}
+                    value={data.key_stats.users.total.toLocaleString()}
                     trend={12.5}
                     trendLabel="vs last month"
                     color="bg-blue-500"
-                    data={data.key_stats.sparklines.users}
+                    data={data.key_stats.users.sparkline}
                 />
                 <AdminStatCard
                     icon={Activity}
                     label="Active Today"
-                    value={data.key_stats.active_today.toLocaleString()}
+                    value={data.key_stats.active.total.toLocaleString()}
                     trend={5.2}
                     trendLabel="vs yesterday"
                     color="bg-green-500"
-                    data={data.key_stats.sparklines.active}
+                    data={data.key_stats.active.sparkline}
                 />
                 <AdminStatCard
                     icon={Dumbbell}
                     label="Workouts Logged"
-                    value={data.key_stats.total_workouts.toLocaleString()}
+                    value={data.key_stats.workouts.total.toLocaleString()}
                     trend={8.1}
                     trendLabel="vs last week"
                     color="bg-purple-500"
-                    data={data.key_stats.sparklines.workouts}
+                    data={data.key_stats.workouts.sparkline}
                 />
                 <AdminStatCard
                     icon={Zap}
@@ -160,6 +160,7 @@ export default function AdminOverview() {
                             color="#3b82f6"
                             height={320}
                             gradientId="userGrowth"
+                            xAxisKey="date"
                         />
                     </div>
                 </motion.div>
@@ -173,7 +174,8 @@ export default function AdminOverview() {
                     <div className="h-80">
                         <WeeklyBarChart
                             data={data.age_distribution}
-                            dataKey="count"
+                            dataKey="value"
+                            xAxisKey="name"
                             color="#ec4899"
                             height={320}
                         />

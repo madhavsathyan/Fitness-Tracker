@@ -6,9 +6,10 @@ interface AreaTrendProps {
     color: string; // e.g., '#F59E0B'
     height?: number;
     gradientId: string;
+    xAxisKey?: string;
 }
 
-export default function AreaTrendChart({ data, dataKey, color, height = 200, gradientId }: AreaTrendProps) {
+export default function AreaTrendChart({ data, dataKey, color, height = 200, gradientId, xAxisKey = "day" }: AreaTrendProps) {
     return (
         <div style={{ width: '100%', height }}>
             <ResponsiveContainer width="100%" height="100%">
@@ -21,7 +22,7 @@ export default function AreaTrendChart({ data, dataKey, color, height = 200, gra
                     </defs>
                     <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="rgba(255,255,255,0.1)" />
                     <XAxis
-                        dataKey="day"
+                        dataKey={xAxisKey}
                         axisLine={false}
                         tickLine={false}
                         tick={{ fill: '#9ca3af', fontSize: 12 }}

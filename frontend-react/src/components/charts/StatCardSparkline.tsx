@@ -11,7 +11,7 @@ export default function StatCardSparkline({ data, color, height = 40 }: Sparklin
 
     return (
         <div style={{ width: '100%', height }}>
-            <ResponsiveContainer>
+            <ResponsiveContainer width="100%" height="100%">
                 <LineChart data={chartData}>
                     <Line
                         type="monotone"

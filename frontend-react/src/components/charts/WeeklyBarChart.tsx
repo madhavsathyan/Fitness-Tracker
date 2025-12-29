@@ -5,16 +5,17 @@ interface WeeklyBarProps {
     dataKey: string;
     color: string;
     height?: number;
+    xAxisKey?: string;  // Added for flexibility
 }
 
-export default function WeeklyBarChart({ data, dataKey, color, height = 200 }: WeeklyBarProps) {
+export default function WeeklyBarChart({ data, dataKey, color, height = 200, xAxisKey = 'day' }: WeeklyBarProps) {
     return (
         <div style={{ width: '100%', height }}>
             <ResponsiveContainer width="100%" height="100%">
                 <BarChart data={data}>
                     <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="rgba(255,255,255,0.1)" />
                     <XAxis
-                        dataKey="day"
+                        dataKey={xAxisKey}
                         axisLine={false}
                         tickLine={false}
                         tick={{ fill: '#9ca3af', fontSize: 12 }}

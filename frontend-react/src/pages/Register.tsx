@@ -25,6 +25,21 @@ const genderOptions = [
     { id: 'other', label: 'Other', emoji: '🧑' },
 ];
 
+// Password strength checker
+const checkPasswordStrength = (password: string): 'weak' | 'fair' | 'good' | 'strong' => {
+    if (password.length === 0) return 'weak';
+    let score = 0;
+    if (password.length >= 8) score++;
+    if (/[a-z]/.test(password) && /[A-Z]/.test(password)) score++;
+    if (/\d/.test(password)) score++;
+    if (/[^a-zA-Z0-9]/.test(password)) score++;
+
+    if (score <= 1) return 'weak';
+    if (score === 2) return 'fair';
+    if (score === 3) return 'good';
+    return 'strong';
+};
+
 export default function Register() {
     const navigate = useNavigate();
     const { register, isLoading, error, clearError } = useAuthStore();
@@ -162,14 +177,32 @@ export default function Register() {
                                         required
                                     />
 
-                                    <input
-                                        type="password"
-                                        placeholder="Password"
-                                        value={formData.password}
-                                        onChange={(e) => updateField('password', e.target.value)}
-                                        className="floating-input"
-                                        required
-                                    />
+                                    <div className="relative">
+                                        <input
+                                            type="password"
+                                            placeholder="Password"
+                                            value={formData.password}
+                                            onChange={(e) => updateField('password', e.target.value)}
+                                            className="floating-input"
+                                            required
+                                        />
+                                        {/* Password Strength */}
+                                        <AnimatePresence>
+                                            {formData.password.length > 0 && (
+                                                <motion.div
+                                                    initial={{ opacity: 0, height: 0 }}
+                                                    animate={{ opacity: 1, height: 'auto' }}
+                                                    exit={{ opacity: 0, height: 0 }}
+                                                    className={`strength-meter strength-${checkPasswordStrength(formData.password)} mt-2`}
+                                                >
+                                                    <div className="strength-segment" />
+                                                    <div className="strength-segment" />
+                                                    <div className="strength-segment" />
+                                                    <div className="strength-segment" />
+                                                </motion.div>
+                                            )}
+                                        </AnimatePresence>
+                                    </div>
 
                                     <input
                                         type="password"
